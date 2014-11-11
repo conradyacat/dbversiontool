@@ -1,17 +1,20 @@
 package com.cyacat;
 
+import com.cyacat.engine.DatabaseVersioningEngine;
+import com.cyacat.engine.ParameterHelper;
+import com.cyacat.engine.ParameterValidationResult;
+import com.cyacat.engine.runner.ScriptRunner;
 import com.cyacat.engine.runner.SqlServerScriptRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -23,10 +26,11 @@ public class App {
 
     public static void main(String[] args) throws IOException {
 
-//        if (args.length == 0) {
-//            LOG.error("Please provide arguments!");
-//        }
+        if (args.length == 0) {
+            LOG.error("Please provide arguments!");
+        }
 
+        // setup
         if (args[0].startsWith("setup")) {
             String[] parts = args[0].split("=");
             createScriptDirectoryStruture(parts[1]);
@@ -37,16 +41,37 @@ public class App {
         PropertiesFactoryBean propFact = appContext.getBean(PropertiesFactoryBean.class);
         Properties props = propFact.getObject();
 
-        //String dbType = props.getProperty("db.type");
+        // TODO: use the db.type value to determine the script runner
+        String dbType = props.getProperty("db.type");
+
+        // parse the arguments into script runner parameters
+        Map<String, String> parameters = ParameterHelper.parse(args);
+
+        ScriptRunner scriptRunner = new SqlServerScriptRunner();
+        List<String> expectedParameters = scriptRunner.getExpectedParameters();
+        expectedParameters.add("script.dir");
+
+        // validate the expected parameters
+        ParameterValidationResult paramResult = ParameterHelper.validate(expectedParameters, parameters);
+        if (!paramResult.isValid()) {
+            // TODO: log the invalid/missing parameters
+            LOG.error("Parameter error");
+        }
+
+        scriptRunner.setParameters(parameters);
 
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)appContext.getBeanFactory();
-        beanFactory.registerBeanDefinition("ScriptRunner", BeanDefinitionBuilder.rootBeanDefinition(SqlServerScriptRunner.class.getName()).getBeanDefinition());
+        beanFactory.registerSingleton("ScriptRunner", scriptRunner);
         appContext.refresh();
 
-        // TODO: what to do here?
-        for (int i = 0; i < args.length; i++) {
-            String[] parts = args[i].split("=");
+        DatabaseVersioningEngine engine = appContext.getBean(DatabaseVersioningEngine.class);
+
+        if (!engine.run(parameters.get("script.dir"))) {
+            LOG.error("Error while executing scripts");
+            return;
         }
+
+        LOG.info("Script executed");
     }
 
     private static void createScriptDirectoryStruture(String rootDirPath) {

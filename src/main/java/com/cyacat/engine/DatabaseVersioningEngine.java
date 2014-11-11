@@ -4,11 +4,13 @@ import com.cyacat.data.domain.DatabaseVersion;
 import com.cyacat.data.domain.DatabaseVersionPK;
 import com.cyacat.data.repository.DatabaseVersionRepository;
 import com.cyacat.engine.runner.ScriptRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,7 @@ public class DatabaseVersioningEngine {
     private final DatabaseVersionRepository databaseVersionRepository;
     private final ScriptRunner scriptRunner;
 
+    @Autowired
     public DatabaseVersioningEngine(DatabaseVersionRepository databaseVersionRepository, ScriptRunner scriptRunner) {
         this.databaseVersionRepository = databaseVersionRepository;
         this.scriptRunner = scriptRunner;
@@ -80,14 +83,20 @@ public class DatabaseVersioningEngine {
             this.databaseVersionRepository.save(dbVersion);
 
             // failed - stop execution on failure
-            if (this.scriptRunner.run(dbVersion.getScriptInfo()) != 0) {
+            try {
+                if (this.scriptRunner.run(dbVersion.getScriptInfo()) != 0) {
+                    dbVersion.setStatus(ScriptStatusType.Error.toString());
+                    this.databaseVersionRepository.save(dbVersion);
+                    return false;
+                }
+
+                // successful
+                dbVersion.setStatus(ScriptStatusType.Ok.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
                 dbVersion.setStatus(ScriptStatusType.Error.toString());
-                this.databaseVersionRepository.save(dbVersion);
-                return false;
             }
 
-            // successful
-            dbVersion.setStatus(ScriptStatusType.Ok.toString());
             this.databaseVersionRepository.save(dbVersion);
         }
 

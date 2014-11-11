@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +39,8 @@ public class App {
             return;
         }
 
-        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
-        PropertiesFactoryBean propFact = appContext.getBean(PropertiesFactoryBean.class);
+        PropertiesFactoryBean propFact = new PropertiesFactoryBean();
+        propFact.setLocation(new ClassPathResource("classpath:app.properties"));
         Properties props = propFact.getObject();
 
         // TODO: use the db.type value to determine the script runner
@@ -60,7 +62,16 @@ public class App {
 
         scriptRunner.setParameters(parameters);
 
+        // add the parameters to the Properties
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            props.put(entry.getKey(), entry.getValue());
+        }
+
+        propFact.setProperties(props);
+
+        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)appContext.getBeanFactory();
+        beanFactory.registerSingleton("props", propFact);
         beanFactory.registerSingleton("ScriptRunner", scriptRunner);
         appContext.refresh();
 

@@ -52,9 +52,9 @@ public class SqlServerScriptRunner implements ScriptRunner {
     public List<String> getExpectedParameters() {
         List<String> params = new ArrayList<>();
         params.add("db.server");
-        params.add("db.uid");
+        params.add("db.user");
         params.add("db.pwd");
-        params.add("db.database");
+        params.add("db.name");
         params.add("sqlcmd.path");
 
         return params;

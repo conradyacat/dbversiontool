@@ -11,13 +11,13 @@
             http://www.springframework.org/schema/data/jpa
             http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="propertyConfigurer">
-        <beans:property name="properties" ref="props" />
-    </bean>
+    <!--<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="propertyConfigurer">-->
+        <!--<beans:property name="properties" ref="props" />-->
+    <!--</bean>-->
 
-    <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <beans:property name="location" value="classpath:app.properties"/>
-    </bean>
+    <!--<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+        <!--<beans:property name="location" value="classpath:app.properties"/>-->
+    <!--</bean>-->
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />

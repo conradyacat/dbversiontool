@@ -10,6 +10,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -26,6 +27,12 @@ public class App {
 //            LOG.error("Please provide arguments!");
 //        }
 
+        if (args[0].startsWith("setup")) {
+            String[] parts = args[0].split("=");
+            createScriptDirectoryStruture(parts[1]);
+            return;
+        }
+
         ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
         PropertiesFactoryBean propFact = appContext.getBean(PropertiesFactoryBean.class);
         Properties props = propFact.getObject();
@@ -40,5 +47,35 @@ public class App {
         for (int i = 0; i < args.length; i++) {
             String[] parts = args[i].split("=");
         }
+    }
+
+    private static void createScriptDirectoryStruture(String rootDirPath) {
+
+        String preVersionPath = rootDirPath + File.separator + "01.preversion";
+        createDirectory(preVersionPath);
+
+        String versionPath = rootDirPath + File.separator + "02.version";
+        createDirectory(versionPath);
+
+        String dbObjectsPath = rootDirPath + File.separator + "03.dbobjects";
+        createDirectory(dbObjectsPath);
+
+        String postVersionPath = rootDirPath + File.separator + "03.postversion";
+        createDirectory(postVersionPath);
+    }
+
+    private static void createDirectory(String path) {
+
+        File dir = new File(path);
+
+        if (dir.exists()) {
+            LOG.info(path + " already exists");
+        }
+
+        if (!dir.mkdirs()) {
+            LOG.info("Failed to create " + path);
+        }
+
+        LOG.info(path + " created");
     }
 }

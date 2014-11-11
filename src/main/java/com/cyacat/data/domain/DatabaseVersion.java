@@ -6,12 +6,12 @@ import java.sql.Timestamp;
 /**
  * Created by Conrad Yacat on 8/4/2014.
  */
-@Table(name="DATABASE_VERSION")
+@Table(name="database_version")
 public class DatabaseVersion {
 
     private DatabaseVersionPK databaseVersionPK = new DatabaseVersionPK();
     private Timestamp dateExecuted;
-    private String scriptHeader;
+    private String scriptInfo;
     private String status;
 
     @EmbeddedId
@@ -23,7 +23,7 @@ public class DatabaseVersion {
         this.databaseVersionPK = databaseVersionPK;
     }
 
-    @Column(name="DATE_EXECUTED")
+    @Column(name="date_executed")
     @Temporal(TemporalType.TIMESTAMP)
     public Timestamp getDateExecuted() {
         return dateExecuted;
@@ -33,16 +33,16 @@ public class DatabaseVersion {
         this.dateExecuted = dateExecuted;
     }
 
-    @Column(name="SCRIPT_HEADER")
-    public String getScriptHeader() {
-        return scriptHeader;
+    @Column(name="script_info")
+    public String getScriptInfo() {
+        return scriptInfo;
     }
 
-    public void setScriptHeader(String scriptHeader) {
-        this.scriptHeader = scriptHeader;
+    public void setScriptInfo(String scriptInfo) {
+        this.scriptInfo = scriptInfo;
     }
 
-    @Column(name="STATUS")
+    @Column(name="status")
     public String getStatus() {
         return status;
     }

@@ -25,7 +25,7 @@ public class DatabaseVersionPK implements Serializable {
         this.scriptType = scriptType;
     }
 
-    @Column(name="MAJOR_RELEASE")
+    @Column(name="major_release")
     public long getMajorRelease() {
         return majorRelease;
     }
@@ -34,7 +34,7 @@ public class DatabaseVersionPK implements Serializable {
         this.majorRelease = majorRelease;
     }
 
-    @Column(name="MINOR_RELEASE")
+    @Column(name="minor_release")
     public long getMinorRelease() {
         return minorRelease;
     }
@@ -43,7 +43,7 @@ public class DatabaseVersionPK implements Serializable {
         this.minorRelease = minorRelease;
     }
 
-    @Column(name="VERSION")
+    @Column(name="version")
     public long getVersion() {
         return version;
     }
@@ -52,7 +52,7 @@ public class DatabaseVersionPK implements Serializable {
         this.version = version;
     }
 
-    @Column(name="SCRIPT_TYPE")
+    @Column(name="script_type")
     public String getScriptType() {
         return scriptType;
     }

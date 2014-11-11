@@ -80,7 +80,7 @@ public class DatabaseVersioningEngine {
             this.databaseVersionRepository.save(dbVersion);
 
             // failed - stop execution on failure
-            if (this.scriptRunner.run(dbVersion.getScriptHeader()) != 0) {
+            if (this.scriptRunner.run(dbVersion.getScriptInfo()) != 0) {
                 dbVersion.setStatus(ScriptStatusType.Error.toString());
                 this.databaseVersionRepository.save(dbVersion);
                 return false;
@@ -130,7 +130,7 @@ public class DatabaseVersioningEngine {
 
                         DatabaseVersion dbVersion = new DatabaseVersion();
                         dbVersion.setDatabaseVersionPK(pk);
-                        dbVersion.setScriptHeader(script.getAbsolutePath());
+                        dbVersion.setScriptInfo(script.getAbsolutePath());
                         dbVersion.setStatus(ScriptStatusType.Executing.toString());
                         dbVersions.put(pk, dbVersion);
                     }
@@ -170,7 +170,7 @@ public class DatabaseVersioningEngine {
                         DatabaseVersionPK pk = new DatabaseVersionPK(latestPK.getMajorRelease(), latestPK.getMinorRelease(), latestPK.getVersion(), root.getName());
                         DatabaseVersion dbVersion = new DatabaseVersion();
                         dbVersion.setDatabaseVersionPK(pk);
-                        dbVersion.setScriptHeader(script.getAbsolutePath());
+                        dbVersion.setScriptInfo(script.getAbsolutePath());
                         dbVersion.setStatus(ScriptStatusType.Executing.toString());
                         dbVersions.put(pk, dbVersion);
                     }

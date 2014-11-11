@@ -11,8 +11,6 @@
             http://www.springframework.org/schema/data/jpa
             http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <jpa:repositories base-package="org.springbyexample.orm.repository" />
-
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="propertyConfigurer">
         <beans:property name="properties" ref="props" />
     </bean>
@@ -21,6 +19,30 @@
         <beans:property name="location" value="classpath:app.properties"/>
     </bean>
 
-    <context:component-scan base-package="com.cyacat.*" />
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
+        <property name="url" value="jdbc:jtds:sqlserver://${db.server};databaseName=${db.name}" />
+        <property name="username" value="${db.user}" />
+        <property name="password" value="${db.pwd}" />
+    </bean>
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="packagesToScan" value="com.cyacat.data.domain" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="false" />
+                <property name="showSql" value="true" />
+                <property name="database" value="${db.type}" />
+                <property name="databasePlatform" value="${db.dialect}" />
+            </bean>
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.jpa.HibernatePersistenceProvider"></bean>
+        </property>
+    </bean>
+
+    <jpa:repositories base-package="com.cyacat.data.repository" entity-manager-factory-ref="entityManagerFactory" />
+
+    <context:component-scan base-package="com.cyacat.engine.*" />
 
 </beans>

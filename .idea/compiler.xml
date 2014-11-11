@@ -25,7 +25,9 @@
         <module name="dbversiontool" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="dbversiontool" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

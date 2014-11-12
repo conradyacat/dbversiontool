@@ -1,7 +1,7 @@
 package com.cyacat.data.domain;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Calendar;
 
 /**
  * Created by Conrad Yacat on 8/4/2014.
@@ -11,9 +11,10 @@ import java.sql.Timestamp;
 public class DatabaseVersion {
 
     private DatabaseVersionPK databaseVersionPK;// = new DatabaseVersionPK();
-    private Timestamp dateExecuted;
+    private Calendar dateExecuted;
     private String scriptInfo;
     private String status;
+    private String executedBy;
 
     @EmbeddedId
     public DatabaseVersionPK getDatabaseVersionPK() {
@@ -24,13 +25,13 @@ public class DatabaseVersion {
         this.databaseVersionPK = databaseVersionPK;
     }
 
-    @Column(name="date_executed")
-    //@Temporal(TemporalType.TIMESTAMP)
-    public Timestamp getDateExecuted() {
+    @Column(name="date_executed", insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    public Calendar getDateExecuted() {
         return dateExecuted;
     }
 
-    public void setDateExecuted(Timestamp dateExecuted) {
+    public void setDateExecuted(Calendar dateExecuted) {
         this.dateExecuted = dateExecuted;
     }
 
@@ -50,6 +51,15 @@ public class DatabaseVersion {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Column(name="executed_by")
+    public String getExecutedBy() {
+        return executedBy;
+    }
+
+    public void setExecutedBy(String executedBy) {
+        this.executedBy = executedBy;
     }
 
     @Override

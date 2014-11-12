@@ -80,6 +80,7 @@ public class DatabaseVersioningEngine {
 
         for (DatabaseVersion dbVersion : dbVersions) {
 
+            dbVersion.setExecutedBy(System.getProperty("user.name"));
             this.databaseVersionRepository.save(dbVersion);
 
             // failed - stop execution on failure
@@ -162,6 +163,17 @@ public class DatabaseVersioningEngine {
         // get all the files if there are no major-directories
         if (CollectionUtils.isEmpty(directories)) {
             List<File> files = getFiles(root);
+
+            // add the files into the list
+            for (File script : files) {
+                long version = Integer.parseInt(script.getName().split("\\.")[0]);
+                DatabaseVersionPK pk = new DatabaseVersionPK(latestPK.getMajorRelease(), latestPK.getMinorRelease(), latestPK.getVersion(), root.getName());
+                DatabaseVersion dbVersion = new DatabaseVersion();
+                dbVersion.setDatabaseVersionPK(pk);
+                dbVersion.setScriptInfo(script.getAbsolutePath());
+                dbVersion.setStatus(ScriptStatusType.Executing.toString());
+                dbVersions.put(pk, dbVersion);
+            }
         } else {
             for (File majorDir : directories) {
                 // get all the minor-directories

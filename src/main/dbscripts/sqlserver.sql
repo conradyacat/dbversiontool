@@ -12,7 +12,7 @@ CREATE TABLE [dbo].[database_version](
 	[minor_release] [bigint] NOT NULL,
 	[version] [bigint] NOT NULL,
 	[script_type] [varchar](50) NOT NULL,
-	[date_executed] [datetime] NOT NULL,
+	[date_executed] [datetime] NOT NULL DEFAULT(GETDATE()),
 	[script_info] [varchar](500) NOT NULL,
 	[status] [varchar](10) NOT NULL,
 	[executed_by] [varchar](50) NOT NULL,

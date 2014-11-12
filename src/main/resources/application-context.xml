@@ -21,7 +21,8 @@
 
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
-        <property name="url" value="jdbc:jtds:sqlserver://${db.server};databaseName=${db.name}" />
+        <!--<property name="url" value="jdbc:jtds:sqlserver://${db.server};instanceName;databaseName=${db.name}" />-->
+        <property name="url" value="jdbc:jtds:sqlserver://127.0.0.1;instanceName=SQLEXPRESS2008R2;integratedSecurity=true;databaseName=TestDB" />
         <property name="username" value="${db.user}" />
         <property name="password" value="${db.pwd}" />
     </bean>

@@ -10,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class App {
         }
 
         PropertiesFactoryBean propFact = new PropertiesFactoryBean();
-        propFact.setLocation(new ClassPathResource("classpath:app.properties"));
+        propFact.setLocation(new FileSystemResource("app.properties"));
         Properties props = propFact.getObject();
 
         // TODO: use the db.type value to determine the script runner

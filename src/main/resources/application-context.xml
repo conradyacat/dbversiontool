@@ -32,7 +32,7 @@
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="generateDdl" value="false" />
-                <property name="showSql" value="true" />
+                <!--<property name="showSql" value="true" />-->
                 <property name="database" value="${db.type}" />
                 <!--<property name="databasePlatform" value="${db.dialect}" />-->
             </bean>
@@ -40,6 +40,8 @@
         <property name="jpaProperties">
             <props>
                 <prop key="hibernate.dialect">${db.dialect}</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
             </props>
         </property>
     </bean>
@@ -47,6 +49,6 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
 
     <jpa:repositories base-package="com.cyacat.data.repository" />
-    <context:component-scan base-package="com.cyacat.engine.*" />
+    <context:component-scan base-package="com.cyacat.engine" />
 
 </beans>

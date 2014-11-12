@@ -15,9 +15,9 @@
         <beans:property name="properties" ref="props" />
     </bean>
 
-    <bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <beans:property name="location" value="classpath:app.properties"/>
-    </bean>
+    <!--<bean id="props" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+        <!--<beans:property name="location" value="classpath:app.properties"/>-->
+    <!--</bean>-->
 
     <jpa:repositories base-package="com.cyacat.data.repository" entity-manager-factory-ref="entityManagerFactory" />
 

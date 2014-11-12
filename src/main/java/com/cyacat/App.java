@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
@@ -38,16 +39,13 @@ public class App {
             return;
         }
 
-//        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("C:\\Development\\dbversiontool\\target\\application-context.xml");
-        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
-        PropertiesFactoryBean propFact = appContext.getBean(PropertiesFactoryBean.class);
-
-//        PropertiesFactoryBean propFact = new PropertiesFactoryBean();
-//        propFact.setLocation(new FileSystemResource("C:\\Development\\dbversiontool\\target\\app.properties"));
-        Properties props = propFact.getObject();
+        PropertiesFactoryBean propFact = new PropertiesFactoryBean();
+        propFact.setLocation(new FileSystemResource("C:\\Development\\dbversiontool\\target\\app.properties"));
+        propFact.afterPropertiesSet();
+        Properties properties = propFact.getObject();
 
         // TODO: use the db.type value to determine the script runner
-        String dbType = props.getProperty("db.type");
+        String dbType = properties.getProperty("db.type");
 
         // parse the arguments into script runner parameters
         Map<String, String> parameters = ParameterHelper.parse(args);
@@ -67,13 +65,17 @@ public class App {
 
         // add the parameters to the Properties
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            props.put(entry.getKey(), entry.getValue());
+            properties.put(entry.getKey(), entry.getValue());
         }
 
-        propFact.setProperties(props);
+        propFact.setProperties(properties);
 
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)appContext.getBeanFactory();
-//        beanFactory.registerSingleton("props", propFact);
+        GenericApplicationContext parentContext = new GenericApplicationContext();
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)parentContext.getBeanFactory();
+        beanFactory.registerSingleton("props", propFact);
+
+        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[] {"classpath:application-context.xml"}, parentContext);
+
         beanFactory.registerSingleton("ScriptRunner", scriptRunner);
         appContext.refresh();
 

@@ -12,12 +12,10 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -48,27 +46,22 @@ public class App {
         // TODO: use the db.type value to determine the script runner
         String dbType = properties.getProperty("db.type");
 
-        // parse the arguments into script runner parameters
-        Map<String, String> parameters = ParameterHelper.parse(args);
+        // parse the arguments and merge to the properties from the file
+        ParameterHelper.parseAndMerge(args, properties);
 
         ScriptRunner scriptRunner = new SqlServerScriptRunner();
         List<String> expectedParameters = scriptRunner.getExpectedParameters();
         expectedParameters.add("script.dir");
 
         // validate the expected parameters
-        ParameterValidationResult paramResult = ParameterHelper.validate(expectedParameters, parameters);
+        ParameterValidationResult paramResult = ParameterHelper.validate(expectedParameters, properties);
         if (!paramResult.isValid()) {
             // TODO: log the invalid/missing parameters
             LOG.error("Parameter error");
+            return;
         }
 
-        scriptRunner.setParameters(parameters);
-
-        // add the parameters to the Properties
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            properties.put(entry.getKey(), entry.getValue());
-        }
-
+        scriptRunner.setParameters(properties);
         propFact.setProperties(properties);
 
         GenericApplicationContext parentContext = new GenericApplicationContext();
@@ -83,7 +76,7 @@ public class App {
 
         DatabaseVersioningEngine engine = appContext.getBean(DatabaseVersioningEngine.class);
 
-        if (!engine.run(parameters.get("script.dir"))) {
+        if (!engine.run(properties.getProperty("script.dir"))) {
             LOG.error("Error while executing scripts");
             return;
         }

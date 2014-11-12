@@ -3,6 +3,7 @@ package com.cyacat.engine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Conrad Yacat on 11/11/2014.
@@ -19,11 +20,19 @@ public final class ParameterHelper {
         return parameters;
     }
 
-    public static ParameterValidationResult validate(List<String> expectedParameters, Map<String, String> parameters) {
+    public static void parseAndMerge(String[] args, Properties properties) {
+        Map<String, String> parameters = parse(args);
+        // add the parameters to the Properties
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            properties.put(entry.getKey(), entry.getValue());
+        }
+    }
+
+    public static ParameterValidationResult validate(List<String> expectedParameters, Properties properties) {
         ParameterValidationResult result = new ParameterValidationResult();
-        for (String p : expectedParameters) {
-            if (!parameters.containsKey(p)) {
-                result.addInvalid(p);
+        for (String key : expectedParameters) {
+            if (!properties.containsKey(key)) {
+                result.addInvalid(key);
             }
         }
 

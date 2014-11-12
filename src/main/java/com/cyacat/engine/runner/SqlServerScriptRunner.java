@@ -7,13 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Conrad Yacat on 8/5/2014.
  */
 public class SqlServerScriptRunner implements ScriptRunner {
 
-    private Map<String, String> parameters;
+    private Properties parameters;
 
     @Override
     public int run(String filePath) throws IOException {
@@ -61,7 +62,7 @@ public class SqlServerScriptRunner implements ScriptRunner {
     }
 
     @Override
-    public void setParameters(Map<String, String> parameters) {
-        parameters = parameters;
+    public void setParameters(Properties parameters) {
+        this.parameters = parameters;
     }
 }

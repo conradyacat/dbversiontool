@@ -11,7 +11,7 @@ public final class ParameterValidationResult {
     private List<String> invalidList = new ArrayList<>();
 
     public boolean isValid() {
-        return this.invalidList.size() > 0;
+        return this.invalidList.size() == 0;
     }
 
     public void addInvalid(String parameter) {

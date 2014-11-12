@@ -19,8 +19,6 @@
         <!--<beans:property name="location" value="classpath:app.properties"/>-->
     <!--</bean>-->
 
-    <jpa:repositories base-package="com.cyacat.data.repository" entity-manager-factory-ref="entityManagerFactory" />
-
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
         <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
         <property name="url" value="jdbc:jtds:sqlserver://${db.server};databaseName=${db.name}" />
@@ -36,16 +34,19 @@
                 <property name="generateDdl" value="false" />
                 <property name="showSql" value="true" />
                 <property name="database" value="${db.type}" />
-                <property name="databasePlatform" value="${db.dialect}" />
+                <!--<property name="databasePlatform" value="${db.dialect}" />-->
             </bean>
         </property>
-        <!--<property name="persistenceProvider">-->
-            <!--<bean class="org.hibernate.jpa.HibernatePersistenceProvider"></bean>-->
-        <!--</property>-->
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${db.dialect}</prop>
+            </props>
+        </property>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
 
+    <jpa:repositories base-package="com.cyacat.data.repository" />
     <context:component-scan base-package="com.cyacat.engine.*" />
 
 </beans>

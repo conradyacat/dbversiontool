@@ -11,6 +11,7 @@ import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class App {
         }
 
         PropertiesFactoryBean propFact = new PropertiesFactoryBean();
-        propFact.setLocation(new FileSystemResource("C:\\Development\\dbversiontool\\target\\app.properties"));
+        propFact.setLocation(new ClassPathResource("app.properties"));
         propFact.afterPropertiesSet();
         Properties properties = propFact.getObject();
 
@@ -73,6 +74,7 @@ public class App {
         GenericApplicationContext parentContext = new GenericApplicationContext();
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)parentContext.getBeanFactory();
         beanFactory.registerSingleton("props", propFact);
+        parentContext.refresh();
 
         ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[] {"classpath:application-context.xml"}, parentContext);
 

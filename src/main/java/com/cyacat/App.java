@@ -38,8 +38,12 @@ public class App {
             return;
         }
 
-        PropertiesFactoryBean propFact = new PropertiesFactoryBean();
-        propFact.setLocation(new FileSystemResource("app.properties"));
+//        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("C:\\Development\\dbversiontool\\target\\application-context.xml");
+        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
+        PropertiesFactoryBean propFact = appContext.getBean(PropertiesFactoryBean.class);
+
+//        PropertiesFactoryBean propFact = new PropertiesFactoryBean();
+//        propFact.setLocation(new FileSystemResource("C:\\Development\\dbversiontool\\target\\app.properties"));
         Properties props = propFact.getObject();
 
         // TODO: use the db.type value to determine the script runner
@@ -68,9 +72,8 @@ public class App {
 
         propFact.setProperties(props);
 
-        ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:application-context.xml");
         DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory)appContext.getBeanFactory();
-        beanFactory.registerSingleton("props", propFact);
+//        beanFactory.registerSingleton("props", propFact);
         beanFactory.registerSingleton("ScriptRunner", scriptRunner);
         appContext.refresh();
 

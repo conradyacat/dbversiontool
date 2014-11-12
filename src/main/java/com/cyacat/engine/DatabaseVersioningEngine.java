@@ -32,7 +32,7 @@ public class DatabaseVersioningEngine {
 
     public boolean run(String targetDirectory) {
         // get latest database script
-        DatabaseVersion latestDbVersion = this.databaseVersionRepository.findOneByMajorReleaseAndMinorReleaseAndVersionOrderByDateExecuted();
+        DatabaseVersion latestDbVersion = this.databaseVersionRepository.findOneOrderByDateExecuted();
 
         // set the default version if there are no DATABASE_VERSION records
         if (latestDbVersion == null) {

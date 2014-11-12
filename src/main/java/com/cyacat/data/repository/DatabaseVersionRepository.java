@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DatabaseVersionRepository extends CrudRepository<DatabaseVersion, DatabaseVersionPK> {
 
-    DatabaseVersion findOneByMajorReleaseAndMinorReleaseAndVersionOrderByDateExecuted();
+    DatabaseVersion findOneOrderByDateExecuted();
 }

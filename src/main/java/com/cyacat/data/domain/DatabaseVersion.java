@@ -6,10 +6,11 @@ import java.sql.Timestamp;
 /**
  * Created by Conrad Yacat on 8/4/2014.
  */
+@Entity
 @Table(name="database_version")
 public class DatabaseVersion {
 
-    private DatabaseVersionPK databaseVersionPK = new DatabaseVersionPK();
+    private DatabaseVersionPK databaseVersionPK;// = new DatabaseVersionPK();
     private Timestamp dateExecuted;
     private String scriptInfo;
     private String status;
@@ -24,7 +25,7 @@ public class DatabaseVersion {
     }
 
     @Column(name="date_executed")
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     public Timestamp getDateExecuted() {
         return dateExecuted;
     }

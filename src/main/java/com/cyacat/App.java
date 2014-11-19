@@ -33,6 +33,7 @@ public class App {
 
         // setup
         if (args[0].startsWith("setup")) {
+            // TODO: the database_version table should also be created here
             String[] parts = args[0].split("=");
             createScriptDirectoryStruture(parts[1]);
             return;

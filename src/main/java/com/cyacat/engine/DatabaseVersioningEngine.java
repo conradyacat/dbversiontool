@@ -231,7 +231,7 @@ public class DatabaseVersioningEngine {
         } else if (latestPK.getMajorRelease() == toBeIncludedPK.getMajorRelease() &&
                 latestPK.getMinorRelease() == toBeIncludedPK.getMinorRelease() &&
                 latestPK.getVersion() == toBeIncludedPK.getVersion() &&
-                latestDbVersion.getStatus() != ScriptStatusType.Error.toString()) {
+                (latestDbVersion.getStatus() != null && latestDbVersion.getStatus() != ScriptStatusType.Error.toString())) {
             return false;
         }
 

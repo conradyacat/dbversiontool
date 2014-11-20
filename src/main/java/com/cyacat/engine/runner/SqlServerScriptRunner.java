@@ -1,5 +1,7 @@
 package com.cyacat.engine.runner;
 
+import org.springframework.util.StringUtils;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +21,22 @@ public class SqlServerScriptRunner implements ScriptRunner {
     @Override
     public int run(String filePath) throws IOException {
 
-        String sqlCmdExePath = this.parameters.get("sqlcmd.path") + File.separator + "sqlcmd.exe --";
+        String sqlCmdExePath = this.parameters.getProperty("sqlcmd.path");
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.isEmpty(sqlCmdExePath)) {
+             sb.append("sqlcmd.exe");
+        } else {
+            sb.append(File.separator).append("sqlcmd.exe");
+        }
+
+        sb.append(" -b ");
+        sb.append(" -S ").append(this.parameters.getProperty("db.server"));
+        sb.append(" -E ");
+        sb.append(" -d ").append(this.parameters.getProperty("db.name"));
+        sb.append(" -U ").append(this.parameters.getProperty("db.user"));
+        sb.append(" -P ").append(this.parameters.getProperty("db.pwd"));
+        sb.append(" -i ").append(filePath);
+        sb.append("\n\rRETURN %ERRORLEVEL%");
 
         BufferedWriter bw = null;
 

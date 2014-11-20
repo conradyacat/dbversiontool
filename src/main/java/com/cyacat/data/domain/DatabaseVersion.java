@@ -8,7 +8,7 @@ import java.util.Calendar;
  */
 @Entity
 @Table(name="database_version")
-public class DatabaseVersion {
+public class DatabaseVersion implements Comparable<DatabaseVersion> {
 
     private DatabaseVersionPK databaseVersionPK;// = new DatabaseVersionPK();
     private Calendar dateExecuted;
@@ -77,5 +77,23 @@ public class DatabaseVersion {
     @Override
     public int hashCode() {
         return databaseVersionPK.hashCode();
+    }
+
+    @Override
+    public int compareTo(DatabaseVersion that) {
+
+        DatabaseVersionPK thisPK = this.getDatabaseVersionPK();
+        DatabaseVersionPK thatPK = that.getDatabaseVersionPK();
+
+        if (thisPK.getMajorRelease() < thatPK.getMajorRelease())
+            return -1;
+        else if (thisPK.getMajorRelease() == thatPK.getMajorRelease() && thisPK.getMinorRelease() < thatPK.getMinorRelease())
+            return -1;
+        else if (thisPK.getMajorRelease() == thatPK.getMajorRelease() && thisPK.getMinorRelease() == thatPK.getMinorRelease() && thisPK.getVersion() < thatPK.getVersion())
+            return -1;
+        else if (thisPK.getMajorRelease() == thatPK.getMajorRelease() && thisPK.getMinorRelease() == thatPK.getMinorRelease() && thisPK.getVersion() == thatPK.getVersion())
+            return 0;
+        else
+            return 1;
     }
 }

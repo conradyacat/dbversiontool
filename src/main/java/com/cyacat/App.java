@@ -96,7 +96,7 @@ public class App {
         String dbObjectsPath = rootDirPath + File.separator + "03.dbobjects";
         createDirectory(dbObjectsPath);
 
-        String postVersionPath = rootDirPath + File.separator + "03.postversion";
+        String postVersionPath = rootDirPath + File.separator + "04.postversion";
         createDirectory(postVersionPath);
     }
 
